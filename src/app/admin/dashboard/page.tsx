@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { verifyAdminSession } from "@/lib/adminAuth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import ProductTable from "@/components/admin/ProductTable";
@@ -6,13 +7,10 @@ import SignOutButton from "@/components/admin/SignOutButton";
 import type { Product } from "@/components/public/ProductCard";
 
 export default async function AdminDashboardPage() {
+  const ok = await verifyAdminSession();
+  if (!ok) redirect("/admin/login");
+
   const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) redirect("/admin/login");
 
   const { data: products } = await supabase
     .from("products")
@@ -28,7 +26,7 @@ export default async function AdminDashboardPage() {
           </h1>
           <div className="flex items-center gap-4">
             <span className="font-body text-xs text-text-muted hidden sm:block">
-              {user.email}
+              Admin
             </span>
             <Link
               href="/admin/products/new"
