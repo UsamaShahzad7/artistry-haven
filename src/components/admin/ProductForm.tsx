@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { uploadImageAction, saveProductAction } from "@/app/admin/products/actions";
 import type { Product } from "@/components/public/ProductCard";
 
 interface ProductFormProps {
@@ -65,17 +65,14 @@ export default function ProductForm({ product }: ProductFormProps) {
     });
   };
 
-  const uploadImages = async (supabase: ReturnType<typeof createClient>): Promise<string[]> => {
+  const uploadImages = async (): Promise<string[]> => {
     const urls: string[] = [];
     for (const file of newFiles) {
-      const ext = file.name.split(".").pop();
-      const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error: uploadError } = await supabase.storage
-        .from("product-images")
-        .upload(path, file, { contentType: file.type });
-      if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
-      const { data } = supabase.storage.from("product-images").getPublicUrl(path);
-      urls.push(data.publicUrl);
+      const fd = new FormData();
+      fd.append("file", file);
+      const result = await uploadImageAction(fd);
+      if (result.error) throw new Error(`Upload failed: ${result.error}`);
+      urls.push(result.url!);
     }
     return urls;
   };
@@ -85,10 +82,8 @@ export default function ProductForm({ product }: ProductFormProps) {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-
     try {
-      const uploadedUrls = await uploadImages(supabase);
+      const uploadedUrls = await uploadImages();
       const allImages = [...existingImages, ...uploadedUrls];
 
       const payload = {
@@ -101,18 +96,8 @@ export default function ProductForm({ product }: ProductFormProps) {
         in_stock: form.in_stock,
       };
 
-      if (product) {
-        const { error: updateError } = await supabase
-          .from("products")
-          .update(payload)
-          .eq("id", product.id);
-        if (updateError) throw updateError;
-      } else {
-        const { error: insertError } = await supabase
-          .from("products")
-          .insert(payload);
-        if (insertError) throw insertError;
-      }
+      const result = await saveProductAction(payload, product?.id);
+      if (result.error) throw new Error(result.error);
 
       router.push("/admin/dashboard");
       router.refresh();

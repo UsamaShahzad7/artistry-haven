@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { deleteProductAction } from "@/app/admin/products/actions";
 import type { Product } from "@/components/public/ProductCard";
 
 interface ProductTableProps {
@@ -18,8 +18,7 @@ export default function ProductTable({ products }: ProductTableProps) {
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Delete "${name}"? This cannot be undone.`)) return;
     setDeleting(id);
-    const supabase = createClient();
-    await supabase.from("products").delete().eq("id", id);
+    await deleteProductAction(id);
     setDeleting(null);
     router.refresh();
   };
