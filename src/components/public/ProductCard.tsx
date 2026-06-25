@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
+import Link from "next/link";
 import { useCart } from "@/lib/CartContext";
+import ImageCarousel from "@/components/public/ImageCarousel";
 
 export interface Product {
   id: string;
@@ -21,22 +22,27 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, variant = "standard" }: ProductCardProps) {
   const { add } = useCart();
-  const image = product.images?.[0] ?? null;
+  const firstImage = product.images?.[0] ?? null;
   const displayPrice = `Rs. ${product.price.toLocaleString()}`;
 
   const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     add({
       id: product.id,
       name: product.name,
       price: product.price,
-      image: image ?? "",
+      image: firstImage ?? "",
     });
   };
 
   if (variant === "flip") {
     return (
-      <div className="card-flip w-full h-[420px] cursor-pointer" style={{ perspective: "1000px" }}>
+      <Link
+        href={`/shop/${product.id}`}
+        className="card-flip block w-full h-[420px] cursor-pointer"
+        style={{ perspective: "1000px" }}
+      >
         <div className="card-flip-inner relative w-full h-full">
           {/* Front */}
           <div className="card-face absolute inset-0 rounded-2xl overflow-hidden bg-blush-100 shadow-md">
@@ -47,13 +53,14 @@ export default function ProductCard({ product, variant = "standard" }: ProductCa
                 </span>
               </div>
             )}
-            {image ? (
-              <Image
-                src={image}
+            {product.images?.length > 0 ? (
+              <ImageCarousel
+                images={product.images}
                 alt={product.name}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 33vw"
+                stopPropagation
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-blush-100 to-blush-300 flex items-center justify-center">
@@ -88,13 +95,16 @@ export default function ProductCard({ product, variant = "standard" }: ProductCa
             )}
           </div>
         </div>
-      </div>
+      </Link>
     );
   }
 
   // Standard card
   return (
-    <div className="masonry-item group rounded-xl overflow-hidden bg-white shadow-sm border border-blush-300/50 hover:shadow-md transition-shadow duration-300">
+    <Link
+      href={`/shop/${product.id}`}
+      className="masonry-item group block rounded-xl overflow-hidden bg-white shadow-sm border border-blush-300/50 hover:shadow-md transition-shadow duration-300"
+    >
       <div className="relative overflow-hidden bg-blush-100">
         {!product.in_stock && (
           <div className="absolute inset-0 bg-text-deep/40 z-10 flex items-center justify-center">
@@ -103,9 +113,9 @@ export default function ProductCard({ product, variant = "standard" }: ProductCa
             </span>
           </div>
         )}
-        {image ? (
-          <Image
-            src={image}
+        {product.images?.length > 0 ? (
+          <ImageCarousel
+            images={product.images}
             alt={product.name}
             width={400}
             height={product.category === "canvas" ? 500 : 300}
@@ -132,6 +142,6 @@ export default function ProductCard({ product, variant = "standard" }: ProductCa
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

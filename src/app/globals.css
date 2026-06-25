@@ -102,3 +102,31 @@ body {
   break-inside: avoid;
   margin-bottom: 1rem;
 }
+
+/* Gentle floating bob for decorative elements */
+@keyframes gentle-float {
+  0%, 100% { transform: translateY(0px) rotate(-5deg); }
+  50% { transform: translateY(-14px) rotate(5deg); }
+}
+
+.gentle-float {
+  animation: gentle-float ease-in-out infinite;
+}
+
+/* Shimmer sweep on Add to Cart button */
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-100%) skewX(-20deg); }
+  100% { transform: translateX(220%) skewX(-20deg); }
+}
+
+.btn-shimmer::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.25), transparent);
+  animation: shimmer-sweep 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
