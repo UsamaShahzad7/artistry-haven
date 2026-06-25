@@ -19,8 +19,8 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-blush-50/95 backdrop-blur-md shadow-sm"
-          : "bg-transparent"
+          ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-blush-100"
+          : "bg-blush-50/60 backdrop-blur-sm"
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -38,9 +38,7 @@ export default function Navbar() {
             priority
           />
           <span
-            className={`font-display text-lg font-medium tracking-wide hidden sm:block transition-colors duration-300 ${
-              scrolled ? "text-text-deep" : "text-white drop-shadow"
-            }`}
+            className="font-display text-lg font-medium tracking-wide hidden sm:block text-text-deep"
           >
             THE ARTISTRY HAVEN
           </span>
@@ -50,9 +48,7 @@ export default function Navbar() {
         <button
           onClick={openCart}
           aria-label={`Open cart, ${count} items`}
-          className={`relative p-2 transition-colors duration-300 ${
-            scrolled ? "text-text-deep hover:text-rose-gold" : "text-white hover:text-blush-100"
-          }`}
+          className="relative p-2 text-text-muted hover:text-rose-gold transition-colors duration-300"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

@@ -3,14 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --blush-50: #fff8f9;
-  --blush-100: #fce8ec;
-  --blush-300: #f5c5ce;
-  --rose-gold: #b5727a;
-  --rose-gold-dark: #8b4f57;
-  --cream: #fffbf5;
-  --text-deep: #3d1f24;
-  --text-muted: #8b6570;
+  --blush-50: #fef4f5;
+  --blush-100: #fae0e6;
+  --blush-300: #f0bfca;
+  --rose-gold: #b87878;
+  --rose-gold-warm: #c4a882;
+  --rose-gold-dark: #9e5f72;
+  --cream: #fffaf8;
+  --text-deep: #6b4a50;
+  --text-muted: #9a7a80;
 }
 
 html {
