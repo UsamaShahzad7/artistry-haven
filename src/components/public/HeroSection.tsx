@@ -4,6 +4,34 @@ import { useRef } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
+function FloatingFlower({ x, y, size, delay, rotate }: { x: string; y: string; size: number; delay: number; rotate: number }) {
+  return (
+    <motion.div
+      className="absolute pointer-events-none select-none"
+      style={{ left: x, top: y }}
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: [0, 0.6, 0.4, 0.6], scale: 1, y: [0, -14, 0, -8, 0], rotate: [rotate, rotate + 12, rotate - 8, rotate] }}
+      transition={{ duration: 7 + delay, delay, repeat: Infinity, ease: "easeInOut" }}
+    >
+      <svg width={size} height={size} viewBox="0 0 40 40" fill="none">
+        {[0, 60, 120, 180, 240, 300].map((deg, i) => (
+          <ellipse
+            key={i}
+            cx={20 + 9 * Math.cos((deg * Math.PI) / 180)}
+            cy={20 + 9 * Math.sin((deg * Math.PI) / 180)}
+            rx={5.5}
+            ry={8}
+            transform={`rotate(${deg}, ${20 + 9 * Math.cos((deg * Math.PI) / 180)}, ${20 + 9 * Math.sin((deg * Math.PI) / 180)})`}
+            fill={i % 2 === 0 ? "#F0BFCA" : "#C4A882"}
+            fillOpacity={0.7}
+          />
+        ))}
+        <circle cx={20} cy={20} r={5} fill="#FAE0E6" />
+      </svg>
+    </motion.div>
+  );
+}
+
 interface HeroSectionProps {
   heroImageUrl?: string | null;
 }
@@ -56,6 +84,15 @@ export default function HeroSection({ heroImageUrl }: HeroSectionProps) {
           filter: "blur(28px)",
         }}
       />
+
+      {/* Floating flowers */}
+      <FloatingFlower x="6%" y="12%" size={28} delay={0} rotate={15} />
+      <FloatingFlower x="88%" y="8%" size={22} delay={1.2} rotate={-20} />
+      <FloatingFlower x="4%" y="65%" size={20} delay={0.7} rotate={30} />
+      <FloatingFlower x="92%" y="70%" size={26} delay={2} rotate={-10} />
+      <FloatingFlower x="18%" y="88%" size={18} delay={1.5} rotate={45} />
+      <FloatingFlower x="78%" y="84%" size={24} delay={0.4} rotate={-35} />
+      <FloatingFlower x="50%" y="5%" size={16} delay={2.5} rotate={0} />
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto flex flex-col items-center">
